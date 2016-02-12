@@ -42,33 +42,29 @@ var lastUpdate = Date.now();
 var t = 0;
 
 //Make everything visible by moving camera away from origin
-camera.position.z = 3.5;
+camera.position.z = 5;
 
-var twoPi = 2 * Math.PI;
-var secondTheta = twoPi / 60; //Complete one full circle every second
+var magic_timing_num = 2.6087;
+var secondTheta = 1 / 60 / magic_timing_num; //Complete one full circle every second
 var minuteTheta = secondTheta / 60; //Complete one full circle every minute
 var hourTheta = minuteTheta / 60; //Complete one full circle every hour
 
 //Moves all of the cubes for a given frame
 var animateCubes = function () {
-	secondsCube.rotation = rotateAboutZ(secondsCube.rotation, secondTheta);
-	minutesCube.position = rotateAboutZ(minutesCube.position, minuteTheta);
-	hoursCube.position = rotateAboutZ(hoursCube.position, hourTheta);
-	
+	secondsCube.rotation = rotateAboutZ(secondsCube.position, secondTheta, 1);
+	minutesCube.position = rotateAboutZ(minutesCube.position, minuteTheta, 1);
+	hoursCube.position   = rotateAboutZ(hoursCube.position, hourTheta, 1);	
 }
 
 
 
 //Rotates the hand cubes around the center of the screen
-var rotateAboutZ = function (position, theta) {
-	cosTheta = Math.cos(theta); 
-	sinTheta = Math.sin(theta);
-
+var rotateAboutZ = function (position, theta, radius) {
 	//These multiplications are analogous to a left multiplication of a matrix
 	// which rotates a vector (about the  Z axis) by "theta" degrees, 
 	// deltaTime is used to make motion step by real-time rather than frame-rendering-time.
-	position.x = deltaTime * (position.x * cosTheta - (position.y * sinTheta));
-	position.y = deltaTime * (position.x * sinTheta + position.y * cosTheta);
+	position.x = Math.sin(theta * lastUpdate) * radius * -1; 
+	position.y = Math.cos(theta * lastUpdate) * radius * -1; 
 	//Z position stays the same
 	position.z = position.z
 }
